@@ -21,12 +21,14 @@ public extension Data
         }
     }
     
-    @discardableResult func save(to filePath: String) -> URL?
+    @discardableResult
+    func save(to filePath: String) -> URL?
     {
         return save(to: URL(fileURLWithPath: filePath))
     }
     
-    @discardableResult func save(to fileUrl: URL) -> URL?
+    @discardableResult
+    func save(to fileUrl: URL) -> URL?
     {
         do
         {

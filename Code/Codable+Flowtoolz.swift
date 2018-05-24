@@ -38,12 +38,14 @@ public extension Decodable
 
 public extension Encodable
 {
-    @discardableResult func save(to filePath: String) -> URL?
+    @discardableResult
+    func save(to filePath: String) -> URL?
     {
         return self.encode()?.save(to: filePath)
     }
     
-    @discardableResult func save(to fileUrl: URL) -> URL?
+    @discardableResult
+    func save(to fileUrl: URL) -> URL?
     {
         return self.encode()?.save(to: fileUrl)
     }
