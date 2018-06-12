@@ -63,9 +63,21 @@ public extension URL
         return query
     }
     
+    // TODO: Should this be a FileManager extension?
     static var documentDirectory: URL?
     {
-        return FileManager.default.urls(for: .documentDirectory,
-                                        in: .userDomainMask).first
+        let fileManager = FileManager.default
+        
+        guard let directoryUrl = try? fileManager.url(for: .documentDirectory,
+                                                      in: .userDomainMask,
+                                                      appropriateFor: nil,
+                                                      create: false)
+        else
+        {
+            print("Error: Could not get document directory.")
+            return nil
+        }
+        
+        return directoryUrl
     }
 }
