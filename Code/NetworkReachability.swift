@@ -1,14 +1,14 @@
 import Foundation
 
-let networkReachability = NetworkReachability()
+public let networkReachability = NetworkReachability()
 
-class NetworkReachability
+public class NetworkReachability
 {
-    fileprivate init() {}
+    fileprivate init() { setup() }
     
-    var isReachable = false
+    public var isReachable = false
     
-    func setup()
+    private func setup()
     {
         guard let reachability = reachabilityObject else
         {
