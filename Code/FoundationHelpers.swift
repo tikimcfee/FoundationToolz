@@ -5,7 +5,7 @@ public var preferredLanguage: String
     return Bundle.main.preferredLocalizations.first?.uppercased() ?? "DE"
 }
 
-public var appVersion: String
+public var appVersion: String?
 {
     if let infoDictionary = Bundle.main.infoDictionary,
         let versionString = infoDictionary["CFBundleShortVersionString"] as? String
@@ -13,10 +13,10 @@ public var appVersion: String
         return versionString
     }
     
-    return "<unknown>"
+    return nil
 }
 
-public var appBuildNumber: String
+public var appBuildNumber: String?
 {
     if let infoDictionary = Bundle.main.infoDictionary,
         let buildNumberString = infoDictionary["CFBundleVersion"] as? String
@@ -24,5 +24,5 @@ public var appBuildNumber: String
         return buildNumberString
     }
     
-    return "<unknown>"
+    return nil
 }
