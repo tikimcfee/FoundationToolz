@@ -4,11 +4,11 @@ public let networkReachability = NetworkReachability()
 
 public class NetworkReachability
 {
-    fileprivate init() { setup() }
+    fileprivate init() {}
     
-    public var isReachable = false
+    public var isReachable = true
     
-    private func setup()
+    public func setup()
     {
         guard let reachability = reachabilityObject else
         {
@@ -44,6 +44,8 @@ public class NetworkReachability
         {
             print("Starting Reachability Notifier failed")
         }
+        
+        isReachable = reachability.isReachable
     }
     
     private let reachabilityObject = Reachability()
