@@ -63,7 +63,6 @@ public extension URL
         return query
     }
     
-    // TODO: Should this be a FileManager extension?
     static var documentDirectory: URL?
     {
         let fileManager = FileManager.default
