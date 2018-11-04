@@ -26,3 +26,10 @@ public var appBuildNumber: String?
     
     return nil
 }
+
+public var appName: String? =
+{
+    guard let key: String = kCFBundleNameKey as String? else { return nil }
+    
+    return Bundle.main.infoDictionary?[key] as? String
+}()
