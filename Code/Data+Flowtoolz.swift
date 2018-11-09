@@ -2,18 +2,18 @@ import Foundation
 
 public extension Data
 {
-    init?(from filePath: String)
+    init?(filePath: String)
     {
-        self.init(from: URL(fileURLWithPath: filePath))
+        self.init(fileURL: URL(fileURLWithPath: filePath))
     }
     
-    init?(from fileUrl: URL?)
+    init?(fileURL: URL?)
     {
-        guard let url = fileUrl else { return nil }
+        guard let fileURL = fileURL else { return nil }
         
         do
         {
-            self = try Data(contentsOf: url)
+            self = try Data(contentsOf: fileURL)
         }
         catch
         {

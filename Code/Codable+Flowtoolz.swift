@@ -2,16 +2,16 @@ import Foundation
 
 public extension Decodable
 {
-    init?(from filePath: String)
+    init?(filePath: String)
     {
         let fileUrl = URL(fileURLWithPath: filePath)
         
-        self.init(from: fileUrl)
+        self.init(fileURL: fileUrl)
     }
     
-    init?(from fileUrl: URL?)
+    init?(fileURL: URL?)
     {
-        if let decodedSelf = Self(with: Data(from: fileUrl))
+        if let decodedSelf = Self(jsonData: Data(fileURL: fileURL))
         {
             self = decodedSelf
         }
@@ -21,13 +21,13 @@ public extension Decodable
         }
     }
     
-    init?(with json: Data?)
+    init?(jsonData: Data?)
     {
-        guard let json = json else { return nil }
+        guard let jsonData = jsonData else { return nil }
         
         do
         {
-            self = try JSONDecoder().decode(Self.self, from: json)
+            self = try JSONDecoder().decode(Self.self, from: jsonData)
         }
         catch
         {
