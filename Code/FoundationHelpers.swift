@@ -33,3 +33,8 @@ public var appName: String? =
     
     return Bundle.main.infoDictionary?[key] as? String
 }()
+
+extension NSPredicate
+{
+    public static var all: NSPredicate { return NSPredicate(value: true) }
+}
