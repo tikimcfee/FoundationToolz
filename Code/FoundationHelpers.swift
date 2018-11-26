@@ -1,11 +1,11 @@
 import Foundation
 
-public var preferredLanguage: String
+public let preferredLanguage: String =
 {
-    return Bundle.main.preferredLocalizations.first?.uppercased() ?? "DE"
-}
+    return Bundle.main.preferredLocalizations.first?.uppercased() ?? "EN"
+}()
 
-public var appVersion: String?
+public let appVersion: String? =
 {
     if let infoDictionary = Bundle.main.infoDictionary,
         let versionString = infoDictionary["CFBundleShortVersionString"] as? String
@@ -14,9 +14,9 @@ public var appVersion: String?
     }
     
     return nil
-}
+}()
 
-public var appBuildNumber: String?
+public let appBuildNumber: String? =
 {
     if let infoDictionary = Bundle.main.infoDictionary,
         let buildNumberString = infoDictionary["CFBundleVersion"] as? String
@@ -25,7 +25,7 @@ public var appBuildNumber: String?
     }
     
     return nil
-}
+}()
 
 public var appName: String? =
 {
