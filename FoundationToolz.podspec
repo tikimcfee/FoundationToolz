@@ -23,6 +23,9 @@
     s.osx.deployment_target = '10.10'
     s.tvos.deployment_target = '9.0'
 
+    # dependencies
+    s.dependency 'ReachabilitySwift', '~> 4.3.0'
+    
     # sorces
     s.source_files = 'Code/**/*.swift'
 end
