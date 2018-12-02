@@ -30,4 +30,11 @@ public extension String
         formatter.dateFormat = toFormat
         return formatter.string(from: date)
     }
+    
+    init(unicode: Int)
+    {
+        var unicodeCharacter = unichar(unicode)
+        
+        self = String(utf16CodeUnits: &unicodeCharacter, count: 1)
+    }
 }
