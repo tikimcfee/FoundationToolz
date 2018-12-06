@@ -29,18 +29,23 @@ public class NetworkReachability
     }
     
     // MARK: - Observing
-    
-    // TODO: Consider adding SwiftObserver as dependency to FoundationToolz for observing network reachability
-    private func update(reachability: Reachability)
-    {
-        observers.removeAll { $0.observer == nil }
-        observers.forEach { $0.notify(reachability.connection) }
-    }
-    
+
     public func notifyOfChanges(_ observer: AnyObject,
                                 action: @escaping (Reachability.Connection) -> Void)
     {
         observers.append(WeakObserver(observer: observer, notify: action))
+    }
+    
+    public func stopNotifying(_ observer: AnyObject)
+    {
+        // TODO: use SwiftyToolz to properly hash observers
+        observers.removeAll { $0.observer === observer }
+    }
+    
+    private func update(reachability: Reachability)
+    {
+        observers.removeAll { $0.observer == nil }
+        observers.forEach { $0.notify(reachability.connection) }
     }
     
     private var observers = [WeakObserver]()
