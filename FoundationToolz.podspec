@@ -2,7 +2,7 @@
     
     # meta infos
     s.name             = "FoundationToolz"
-    s.version          = "1.0.0"
+    s.version          = "1.0.1"
     s.summary          = "Reusable Foundation Tools"
     s.description      = "Some Reusable Tools Based on the Foundation Framework"
     s.homepage         = "http://flowtoolz.com"
@@ -13,7 +13,7 @@
     
     # compiler requirements
     s.requires_arc = true
-    s.swift_version = '4.2'
+    s.swift_version = '5.0'
     
     # minimum platform SDKs
     s.platforms = {:ios => "9.0", :osx => "10.10", :tvos => "9.0"}
