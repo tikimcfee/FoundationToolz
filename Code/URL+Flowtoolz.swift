@@ -65,18 +65,17 @@ public extension URL
     
     static var documentDirectory: URL?
     {
-        let fileManager = FileManager.default
-        
-        guard let directoryUrl = try? fileManager.url(for: .documentDirectory,
-                                                      in: .userDomainMask,
-                                                      appropriateFor: nil,
-                                                      create: false)
-        else
+        do
         {
-            print("Error: Could not get document directory.")
+            return try FileManager.default.url(for: .documentDirectory,
+                                               in: .userDomainMask,
+                                               appropriateFor: nil,
+                                               create: false)
+        }
+        catch
+        {
+            print("Error: \(error.localizedDescription)")
             return nil
         }
-        
-        return directoryUrl
     }
 }
