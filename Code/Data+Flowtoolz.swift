@@ -31,15 +31,28 @@ public extension Data
     @discardableResult
     func save(to fileUrl: URL) -> URL?
     {
-        do
+        let manager = FileManager.default
+        
+        if manager.fileExists(atPath: fileUrl.path)
         {
-            try write(to: fileUrl)
-            return fileUrl
+            do
+            {
+                try write(to: fileUrl)
+                return fileUrl
+            }
+            catch
+            {
+                print(error.localizedDescription)
+                return nil
+            }
         }
-        catch
+        else
         {
-            print(error)
-            return nil
+            let didCreateFile = manager.createFile(atPath: fileUrl.path,
+                                                   contents: self,
+                                                   attributes: nil)
+            
+            return didCreateFile ? fileUrl : nil
         }
     }
     
