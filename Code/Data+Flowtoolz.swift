@@ -17,6 +17,7 @@ public extension Data
         }
         catch
         {
+            print(error.localizedDescription)
             return nil
         }
     }
