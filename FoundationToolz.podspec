@@ -2,7 +2,7 @@
     
     # meta infos
     s.name             = "FoundationToolz"
-    s.version          = "1.0.1"
+    s.version          = "1.0.2"
     s.summary          = "Reusable Foundation Tools"
     s.description      = "Some Reusable Tools Based on the Foundation Framework"
     s.homepage         = "http://flowtoolz.com"
