@@ -2,7 +2,7 @@
     
     # meta infos
     s.name             = "FoundationToolz"
-    s.version          = "1.0.2"
+    s.version          = "1.0.3"
     s.summary          = "Reusable Foundation Tools"
     s.description      = "Some Reusable Tools Based on the Foundation Framework"
     s.homepage         = "http://flowtoolz.com"
@@ -16,12 +16,12 @@
     s.swift_version = '5.0'
     
     # minimum platform SDKs
-    s.platforms = {:ios => "9.0", :osx => "10.10", :tvos => "9.0"}
+    s.platforms = {:ios => "11.0", :osx => "10.12", :tvos => "11.0"}
 
     # minimum deployment targets
-    s.ios.deployment_target  = '9.0'
-    s.osx.deployment_target = '10.10'
-    s.tvos.deployment_target = '9.0'
+    s.ios.deployment_target  = '11.0'
+    s.osx.deployment_target = '10.12'
+    s.tvos.deployment_target = '11.0'
 
     # dependencies
     s.dependency 'ReachabilitySwift', '~> 4.3.0'
