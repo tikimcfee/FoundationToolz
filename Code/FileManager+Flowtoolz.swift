@@ -1,11 +1,11 @@
 import Foundation
 
-extension FileManager
+public extension FileManager
 {
     @discardableResult
-    public func ensureDirectoryExists(_ dir: URL) -> URL?
+    func ensureDirectoryExists(_ dir: URL) -> URL?
     {
-        guard !fileExists(atPath: dir.path) else { return dir }
+        guard !itemExists(dir) else { return dir }
         
         do
         {
@@ -19,7 +19,12 @@ extension FileManager
         }
     }
     
-    public func files(in directory: URL?) -> [URL]
+    func itemExists(_ file: URL) -> Bool
+    {
+        return fileExists(atPath: file.path)
+    }
+    
+    func items(in directory: URL?) -> [URL]
     {
         guard let directory = directory else { return [] }
         
@@ -31,6 +36,21 @@ extension FileManager
         {
             print(error.localizedDescription)
             return []
+        }
+    }
+    
+    @discardableResult
+    func remove(item: URL) -> Bool
+    {
+        do
+        {
+            try removeItem(at: item)
+            return true
+        }
+        catch
+        {
+            print(error.localizedDescription)
+            return false
         }
     }
 }
