@@ -29,16 +29,16 @@ public extension Data
     }
     
     @discardableResult
-    func save(to fileUrl: URL) -> URL?
+    func save(to file: URL) -> URL?
     {
         let manager = FileManager.default
         
-        if manager.fileExists(atPath: fileUrl.path)
+        if manager.fileExists(atPath: file.path)
         {
             do
             {
-                try write(to: fileUrl)
-                return fileUrl
+                try write(to: file)
+                return file
             }
             catch
             {
@@ -48,11 +48,9 @@ public extension Data
         }
         else
         {
-            let didCreateFile = manager.createFile(atPath: fileUrl.path,
-                                                   contents: self,
-                                                   attributes: nil)
+            let didCreateFile = manager.createFile(atPath: file.path, contents: self)
             
-            return didCreateFile ? fileUrl : nil
+            return didCreateFile ? file : nil
         }
     }
     

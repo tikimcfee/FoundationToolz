@@ -31,6 +31,7 @@ public extension Decodable
         }
         catch
         {
+            print(error.localizedDescription)
             return nil
         }
     }
@@ -41,13 +42,13 @@ public extension Encodable
     @discardableResult
     func save(to filePath: String) -> URL?
     {
-        return self.encode()?.save(to: filePath)
+        return encode()?.save(to: filePath)
     }
     
     @discardableResult
-    func save(to fileUrl: URL) -> URL?
+    func save(to file: URL) -> URL?
     {
-        return self.encode()?.save(to: fileUrl)
+        return encode()?.save(to: file)
     }
     
     func encode() -> Data?
@@ -56,6 +57,14 @@ public extension Encodable
         
         jsonEncoder.outputFormatting = .prettyPrinted
         
-        return try? jsonEncoder.encode(self)
+        do
+        {
+            return try jsonEncoder.encode(self)
+        }
+        catch
+        {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
