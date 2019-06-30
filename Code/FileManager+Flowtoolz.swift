@@ -18,4 +18,21 @@ extension FileManager
             return false
         }
     }
+    
+    public func files(in directory: URL?) -> [URL]
+    {
+        guard let directory = directory else { return [] }
+        
+        do
+        {
+            return try contentsOfDirectory(at: directory,
+                                           includingPropertiesForKeys: nil,
+                                           options: [])
+        }
+        catch
+        {
+            print(error.localizedDescription)
+            return []
+        }
+    }
 }
