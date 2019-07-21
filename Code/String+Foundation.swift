@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyToolz
 
 public extension String
 {
@@ -10,6 +11,7 @@ public extension String
         }
         catch
         {
+            log(error: error.localizedDescription)
             return nil
         }
     }

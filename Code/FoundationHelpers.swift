@@ -1,9 +1,6 @@
 import Foundation
 
-public let preferredLanguage: String =
-{
-    return Bundle.main.preferredLocalizations.first?.uppercased() ?? "EN"
-}()
+public let preferredLanguage =  Bundle.main.preferredLocalizations.first?.uppercased() ?? "EN"
 
 public let appVersion: String? =
 {

@@ -25,6 +25,7 @@
 
     # dependencies
     s.dependency 'ReachabilitySwift', '~> 4.3.0'
+    s.dependency 'SwiftyToolz', '~> 1.5'
     
     # sorces
     s.source_files = 'Code/**/*.swift'

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyToolz
 
 public extension URL
 {
@@ -74,7 +75,7 @@ public extension URL
         }
         catch
         {
-            print("Error: \(error.localizedDescription)")
+            log(error: error.localizedDescription)
             return nil
         }
     }

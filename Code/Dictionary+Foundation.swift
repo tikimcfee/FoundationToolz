@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyToolz
 
 extension Dictionary
 {
@@ -14,7 +15,7 @@ extension Dictionary
             let value = String(describing: value).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
             
             guard let definiteKey = key, let definiteValue = value else {
-                print("Couldn't parse to string")
+                log(error: "Couldn't parse to string")
                 return ""
             }
             

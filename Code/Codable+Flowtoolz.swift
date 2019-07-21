@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyToolz
 
 public extension Decodable
 {
@@ -17,6 +18,7 @@ public extension Decodable
         }
         else
         {
+            log(error: "\(#function) failed for url: \(fileURL?.absoluteString ?? "nil")")
             return nil
         }
     }
@@ -31,7 +33,7 @@ public extension Decodable
         }
         catch
         {
-            print(error.localizedDescription)
+            log(error: error.localizedDescription)
             return nil
         }
     }
@@ -63,7 +65,7 @@ public extension Encodable
         }
         catch
         {
-            print(error.localizedDescription)
+            log(error: error.localizedDescription)
             return nil
         }
     }

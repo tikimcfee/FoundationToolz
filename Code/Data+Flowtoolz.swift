@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyToolz
 
 public extension Data
 {
@@ -17,7 +18,7 @@ public extension Data
         }
         catch
         {
-            print(error.localizedDescription)
+            log(error: error.localizedDescription)
             return nil
         }
     }
@@ -31,9 +32,7 @@ public extension Data
     @discardableResult
     func save(to file: URL) -> URL?
     {
-        let manager = FileManager.default
-        
-        if manager.fileExists(atPath: file.path)
+        if FileManager.default.itemExists(file)
         {
             do
             {
@@ -42,13 +41,14 @@ public extension Data
             }
             catch
             {
-                print(error.localizedDescription)
+                log(error: error.localizedDescription)
                 return nil
             }
         }
         else
         {
-            let didCreateFile = manager.createFile(atPath: file.path, contents: self)
+            let didCreateFile = FileManager.default.createFile(atPath: file.path,
+                                                               contents: self)
             
             return didCreateFile ? file : nil
         }

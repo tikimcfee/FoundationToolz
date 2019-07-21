@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyToolz
 
 public extension FileManager
 {
@@ -14,14 +15,14 @@ public extension FileManager
         }
         catch
         {
-            print(error.localizedDescription)
+            log(error: error.localizedDescription)
             return nil
         }
     }
     
-    func itemExists(_ file: URL) -> Bool
+    func removeItems(in directory: URL?) -> Bool
     {
-        return fileExists(atPath: file.path)
+        return remove(items(in: directory))
     }
     
     func items(in directory: URL?) -> [URL]
@@ -30,18 +31,32 @@ public extension FileManager
         
         do
         {
-            return try contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            return try contentsOfDirectory(at: directory,
+                                           includingPropertiesForKeys: nil,
+                                           options: [.skipsHiddenFiles])
         }
         catch
         {
-            print(error.localizedDescription)
+            log(error: error.localizedDescription)
             return []
         }
     }
     
     @discardableResult
-    func remove(item: URL) -> Bool
+    func remove(_ items: [URL]) -> Bool
     {
+        var didFail = false
+        
+        items.forEach { if !remove($0) { didFail = true } }
+        
+        return !didFail
+    }
+    
+    @discardableResult
+    func remove(_ item: URL) -> Bool
+    {
+        guard itemExists(item) else { return false }
+        
         do
         {
             try removeItem(at: item)
@@ -49,8 +64,13 @@ public extension FileManager
         }
         catch
         {
-            print(error.localizedDescription)
+            log(error: error.localizedDescription)
             return false
         }
+    }
+    
+    func itemExists(_ item: URL) -> Bool
+    {
+        return fileExists(atPath: item.path)
     }
 }

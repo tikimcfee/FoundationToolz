@@ -1,6 +1,7 @@
 import Foundation
 import Reachability
 import Network
+import SwiftyToolz
 
 public class NetworkReachability
 {
@@ -42,7 +43,7 @@ public class NetworkReachability
     {
         guard let reachability = reachability else
         {
-            print("ERROR: Reachability object couldn't be created.")
+            log(error: "Reachability object couldn't be created.")
             return
         }
         
@@ -53,9 +54,9 @@ public class NetworkReachability
         {
             try reachability.startNotifier()
         }
-        catch let error
+        catch
         {
-            print("ERROR: \(error.localizedDescription)")
+            log(error: error.localizedDescription)
         }
     }
     
