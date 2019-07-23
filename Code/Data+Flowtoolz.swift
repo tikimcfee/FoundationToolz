@@ -3,18 +3,18 @@ import SwiftyToolz
 
 public extension Data
 {
-    init?(filePath: String)
+    init?(fromFilePath filePath: String)
     {
-        self.init(fileURL: URL(fileURLWithPath: filePath))
+        self.init(from: URL(fileURLWithPath: filePath))
     }
     
-    init?(fileURL: URL?)
+    init?(from file: URL?)
     {
-        guard let fileURL = fileURL else { return nil }
+        guard let file = file else { return nil }
         
         do
         {
-            self = try Data(contentsOf: fileURL)
+            self = try Data(contentsOf: file)
         }
         catch
         {
@@ -24,14 +24,16 @@ public extension Data
     }
     
     @discardableResult
-    func save(to filePath: String) -> URL?
+    func save(toFilePath filePath: String) -> URL?
     {
         return save(to: URL(fileURLWithPath: filePath))
     }
     
     @discardableResult
-    func save(to file: URL) -> URL?
+    func save(to file: URL?) -> URL?
     {
+        guard let file = file else { return nil }
+        
         if FileManager.default.itemExists(file)
         {
             do

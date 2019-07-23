@@ -3,27 +3,27 @@ import SwiftyToolz
 
 public extension Decodable
 {
-    init?(filePath: String)
+    init?(fromFilePath filePath: String)
     {
-        let fileUrl = URL(fileURLWithPath: filePath)
+        let file = URL(fileURLWithPath: filePath)
         
-        self.init(fileURL: fileUrl)
+        self.init(from: file)
     }
     
-    init?(fileURL: URL?)
+    init?(from file: URL?)
     {
-        if let decodedSelf = Self(jsonData: Data(fileURL: fileURL))
+        if let decodedSelf = Self(fromJSON: Data(from: file))
         {
             self = decodedSelf
         }
         else
         {
-            log(error: "\(#function) failed for url: \(fileURL?.absoluteString ?? "nil")")
+            log(error: "\(#function) failed for url: \(file?.absoluteString ?? "nil")")
             return nil
         }
     }
     
-    init?(jsonData: Data?)
+    init?(fromJSON jsonData: Data?)
     {
         guard let jsonData = jsonData else { return nil }
         
@@ -42,13 +42,13 @@ public extension Decodable
 public extension Encodable
 {
     @discardableResult
-    func save(to filePath: String) -> URL?
+    func save(toFilePath filePath: String) -> URL?
     {
-        return encode()?.save(to: filePath)
+        return encode()?.save(toFilePath: filePath)
     }
     
     @discardableResult
-    func save(to file: URL) -> URL?
+    func save(to file: URL?) -> URL?
     {
         return encode()?.save(to: file)
     }

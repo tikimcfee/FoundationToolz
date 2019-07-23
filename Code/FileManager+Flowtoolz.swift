@@ -53,9 +53,9 @@ public extension FileManager
     }
     
     @discardableResult
-    func remove(_ item: URL) -> Bool
+    func remove(_ item: URL?) -> Bool
     {
-        guard itemExists(item) else { return false }
+        guard let item = item, itemExists(item) else { return false }
         
         do
         {
