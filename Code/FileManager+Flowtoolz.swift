@@ -69,8 +69,9 @@ public extension FileManager
         }
     }
     
-    func itemExists(_ item: URL) -> Bool
+    func itemExists(_ item: URL?) -> Bool
     {
+        guard let item = item else { return false }
         return fileExists(atPath: item.path)
     }
 }

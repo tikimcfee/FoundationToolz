@@ -5,9 +5,7 @@ public extension Decodable
 {
     init?(fromFilePath filePath: String)
     {
-        let file = URL(fileURLWithPath: filePath)
-        
-        self.init(from: file)
+        self.init(from: URL(fileURLWithPath: filePath))
     }
     
     init?(from file: URL?)
