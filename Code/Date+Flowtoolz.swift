@@ -76,3 +76,9 @@ public extension Date
                                        to: calendar.startOfDay(for: self)).day
     }
 }
+
+public extension Array where Element == Date
+{
+    var latest: Date? { return self.max(by: <) }
+    var earliest: Date? { return self.min(by: <) }
+}
