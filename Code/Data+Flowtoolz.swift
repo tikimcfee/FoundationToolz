@@ -10,7 +10,7 @@ public extension Data
     
     init?(from file: URL?)
     {
-        guard let file = file else { return nil }
+        guard let file = file, FileManager.default.itemExists(file) else { return nil }
         
         do
         {
@@ -34,25 +34,21 @@ public extension Data
     {
         guard let file = file else { return nil }
         
-        if FileManager.default.itemExists(file)
+        guard FileManager.default.itemExists(file) else
         {
-            do
-            {
-                try write(to: file)
-                return file
-            }
-            catch
-            {
-                log(error: error.localizedDescription)
-                return nil
-            }
+            return FileManager.default.createFile(atPath: file.path,
+                                                  contents: self) ? file : nil
         }
-        else
+        
+        do
         {
-            let didCreateFile = FileManager.default.createFile(atPath: file.path,
-                                                               contents: self)
-            
-            return didCreateFile ? file : nil
+            try write(to: file)
+            return file
+        }
+        catch
+        {
+            log(error: error.localizedDescription)
+            return nil
         }
     }
     

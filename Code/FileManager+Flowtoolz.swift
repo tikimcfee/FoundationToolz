@@ -6,7 +6,7 @@ public extension FileManager
     @discardableResult
     func ensureDirectoryExists(_ dir: URL) -> URL?
     {
-        guard !itemExists(dir) else { return dir }
+        if itemExists(dir) { return dir }
         
         do
         {
@@ -42,20 +42,24 @@ public extension FileManager
         }
     }
     
+    /**
+     Removes items if they exist
+     - Returns: `true` if all items were actually removed. `false` if at least one doesn't exist or an error occured.
+     **/
     @discardableResult
     func remove(_ items: [URL]) -> Bool
     {
-        var didFail = false
-        
-        items.forEach { if !remove($0) { didFail = true } }
-        
-        return !didFail
+        return items.reduce(true) { removedAll, item in removedAll && remove(item) }
     }
     
+    /**
+     Removes an item if it exists
+     - Returns: `true` if the item actually was removed. `false` if it doesn't exist or some error occured.
+     **/
     @discardableResult
     func remove(_ item: URL?) -> Bool
     {
-        guard let item = item else { return false }
+        guard let item = item, itemExists(item) else { return false }
         
         do
         {

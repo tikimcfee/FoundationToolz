@@ -16,7 +16,6 @@ public extension Decodable
         }
         else
         {
-            log(error: "\(#function) failed for url: \(file?.absoluteString ?? "nil")")
             return nil
         }
     }
