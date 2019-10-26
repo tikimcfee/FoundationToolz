@@ -59,12 +59,12 @@ public extension Date
     
     func plus(months: Int) -> Date?
     {
-        return Calendar.current.date(byAdding: .month, value: months, to: self)
+        Calendar.current.date(byAdding: .month, value: months, to: self)
     }
     
     func plus(days: Int) -> Date?
     {
-        return Calendar.current.date(byAdding: .day, value: days, to: self)
+        Calendar.current.date(byAdding: .day, value: days, to: self)
     }
     
     func days(since date: Date) -> Int?
@@ -79,6 +79,6 @@ public extension Date
 
 public extension Array where Element == Date
 {
-    var latest: Date? { return self.max(by: <) }
-    var earliest: Date? { return self.min(by: <) }
+    var latest: Date? { self.max(by: <) }
+    var earliest: Date? { self.min(by: <) }
 }

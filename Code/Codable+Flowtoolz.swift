@@ -41,13 +41,13 @@ public extension Encodable
     @discardableResult
     func save(toFilePath filePath: String) -> URL?
     {
-        return encode()?.save(toFilePath: filePath)
+        encode()?.save(toFilePath: filePath)
     }
     
     @discardableResult
     func save(to file: URL?) -> URL?
     {
-        return encode()?.save(to: file)
+        encode()?.save(to: file)
     }
     
     func encode() -> Data?

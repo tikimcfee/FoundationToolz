@@ -77,7 +77,7 @@ public class NetworkReachability
     
     public var connection: Reachability.Connection?
     {
-        return reachability?.connection
+        reachability?.connection
     }
     
     private let reachability = Reachability()

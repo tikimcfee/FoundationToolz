@@ -15,12 +15,12 @@ public extension Int
     
     var monthString: String
     {
-        return monthString(withDateFormat: "MMMM")
+        monthString(withDateFormat: "MMMM")
     }
     
     var monthStringShort: String
     {
-        return monthString(withDateFormat: "MMM")
+        monthString(withDateFormat: "MMM")
     }
     
     func monthString(withDateFormat format: String) -> String

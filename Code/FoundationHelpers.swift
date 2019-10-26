@@ -33,5 +33,5 @@ public var appName: String? =
 
 public extension NSPredicate
 {
-    static var all: NSPredicate { return NSPredicate(value: true) }
+    static var all: NSPredicate { NSPredicate(value: true) }
 }

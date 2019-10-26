@@ -4,7 +4,7 @@ public extension Double
 {
     static var uptimeMilliseconds: Double
     {
-        return Double(uptimeNanoSeconds) / 1000000.0
+        Double(uptimeNanoSeconds) / 1000000.0
     }
     
     static var uptimeNanoSeconds: UInt64

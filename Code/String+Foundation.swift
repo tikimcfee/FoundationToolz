@@ -18,7 +18,7 @@ public extension String
     
     var fileName: String
     {
-        return URL(fileURLWithPath: self).lastPathComponent
+        URL(fileURLWithPath: self).lastPathComponent
     }
     
     func dateString(fromFormat: String, toFormat: String) -> String

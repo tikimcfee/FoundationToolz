@@ -22,7 +22,7 @@ public extension FileManager
     
     func removeItems(in directory: URL?) -> Bool
     {
-        return remove(items(in: directory))
+        remove(items(in: directory))
     }
     
     func items(in directory: URL?) -> [URL]
@@ -49,7 +49,7 @@ public extension FileManager
     @discardableResult
     func remove(_ items: [URL]) -> Bool
     {
-        return items.reduce(true) { removedAll, item in removedAll && remove(item) }
+        items.reduce(true) { removedAll, item in removedAll && remove(item) }
     }
     
     /**

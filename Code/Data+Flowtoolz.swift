@@ -26,7 +26,7 @@ public extension Data
     @discardableResult
     func save(toFilePath filePath: String) -> URL?
     {
-        return save(to: URL(fileURLWithPath: filePath))
+        save(to: URL(fileURLWithPath: filePath))
     }
     
     @discardableResult
@@ -54,6 +54,6 @@ public extension Data
     
     var utf8String: String?
     {
-        return String(data: self, encoding: .utf8)
+        String(data: self, encoding: .utf8)
     }
 }
