@@ -20,6 +20,7 @@ public extension FileManager
         }
     }
     
+    @discardableResult
     func removeItems(in directory: URL?) -> Bool
     {
         remove(items(in: directory))
