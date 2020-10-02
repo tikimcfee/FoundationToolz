@@ -13,10 +13,14 @@ let package = Package(
             url: "https://github.com/flowtoolz/SwiftyToolz.git",
             .upToNextMajor(from: "1.5.5")
         ),
+        .package(
+            url: "https://github.com/ashleymills/Reachability.swift.git",
+            .upToNextMinor(from: "4.3.0")
+        ),
     ],
     targets: [
         .target(name: "FoundationToolz",
-                dependencies: ["SwiftyToolz"],
+                dependencies: ["SwiftyToolz", "Reachability"],
                 path: "Code"),
     ]
 )
