@@ -100,9 +100,14 @@ public extension URL
             case .decodingDataFailed(let response, _):
                 let status = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
                 return "Could not decode the data. HTTP Status: " + status
-            case .validatingResponseStatusFailed(let response, _):
+            case .validatingResponseStatusFailed(let response, let data):
                 let status = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
-                return "Unexpected HTTP Status: " + status
+                var message = "Unexpected HTTP Status: " + status
+                if let dataString = data?.utf8String
+                {
+                    message += "\nResponse data: " + dataString
+                }
+                return message
             }
         }
         
