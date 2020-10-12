@@ -79,4 +79,9 @@ public extension URL
             return nil
         }
     }
+    
+    static func + (url: URL, pathComponent: String) -> URL
+    {
+        url.appendingPathComponent(pathComponent)
+    }
 }
