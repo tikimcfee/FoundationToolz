@@ -49,6 +49,7 @@ public extension URL
         }
         
         var request = URLRequest(url: self)
+        request.httpMethod = "POST"
         request.httpBody = valueData
         
         URLSession.shared.dataTask(with: request)
