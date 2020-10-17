@@ -6,12 +6,12 @@ public extension URL
 {
     func webSocket(receiveData: @escaping (Data) -> Void,
                    receiveText: @escaping (String) -> Void,
-                   receiveError: @escaping (Error) -> Void) -> WebSocket?
+                   receiveError: @escaping (WebSocket, Error) -> Void) throws -> WebSocket
     {
-        WebSocket(self,
-                  receiveData: receiveData,
-                  receiveText: receiveText,
-                  receiveError: receiveError)
+        try WebSocket(self,
+                      receiveData: receiveData,
+                      receiveText: receiveText,
+                      receiveError: receiveError)
     }
 }
 
@@ -20,13 +20,13 @@ public class WebSocket
 {
     // MARK: - Life Cycle
     
-    init?(_ url: URL,
+    init(_ url: URL,
           receiveData: @escaping (Data) -> Void,
           receiveText: @escaping (String) -> Void,
-          receiveError: @escaping (Error) -> Void)
+          receiveError: @escaping (WebSocket, Error) -> Void) throws
     {
-        guard let webSocketURL = url.with(scheme: .ws) else { return nil }
-        webSocketTask = URLSession.shared.webSocketTask(with: webSocketURL)
+        self.url = try url.with(scheme: .ws)
+        webSocketTask = URLSession.shared.webSocketTask(with: self.url)
         didReceiveData = receiveData
         didReceiveText = receiveText
         didReceiveError = receiveError
@@ -56,7 +56,7 @@ public class WebSocket
             case .string(let text): didReceiveText(text)
             @unknown default: log(error: "Unknown type of WebSocket message")
             }
-        case .failure(let error): didReceiveError(error)
+        case .failure(let error): didReceiveError(self, error)
         }
         
         if !isClosed { receiveMessage() }
@@ -72,7 +72,7 @@ public class WebSocket
     
     private let didReceiveData: (Data) -> Void
     private let didReceiveText: (String) -> Void
-    private let didReceiveError: (Error) -> Void
+    private let didReceiveError: (WebSocket, Error) -> Void
     
     // MARK: - Sending Messages
     
@@ -88,28 +88,27 @@ public class WebSocket
     
     // MARK: - WebSocket Task
     
+    public let url: URL
     private let webSocketTask: URLSessionWebSocketTask
 }
 
 public extension URL
 {
-    func with(scheme newScheme: Scheme) -> URL?
+    func with(scheme newScheme: Scheme) throws -> URL
     {
         if scheme == newScheme.rawValue { return self }
         
         guard var newComponents = URLComponents(url: self,
                                                 resolvingAgainstBaseURL: true) else
         {
-            log(error: "Couldn't detect components of URL: \(absoluteString)")
-            return nil
+            throw "Couldn't detect components of URL: \(absoluteString)"
         }
         
         newComponents.scheme = newScheme.rawValue
         
         guard let newURL = newComponents.url else
         {
-            log(error: "Couldn't create url from: \(newComponents)")
-            return nil
+            throw "Couldn't create url from: \(newComponents)"
         }
         
         return newURL
