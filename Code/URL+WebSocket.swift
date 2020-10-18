@@ -4,14 +4,9 @@ import SwiftyToolz
 @available(OSX 10.15, *)
 public extension URL
 {
-    func webSocket(receiveData: @escaping (Data) -> Void,
-                   receiveText: @escaping (String) -> Void,
-                   receiveError: @escaping (WebSocket, Error) -> Void) throws -> WebSocket
+    func webSocket() throws -> WebSocket
     {
-        try WebSocket(self,
-                      receiveData: receiveData,
-                      receiveText: receiveText,
-                      receiveError: receiveError)
+        try WebSocket(self)
     }
 }
 
@@ -20,16 +15,10 @@ public class WebSocket
 {
     // MARK: - Life Cycle
     
-    init(_ url: URL,
-          receiveData: @escaping (Data) -> Void,
-          receiveText: @escaping (String) -> Void,
-          receiveError: @escaping (WebSocket, Error) -> Void) throws
+    init(_ url: URL) throws
     {
         self.url = try url.with(scheme: .ws)
         webSocketTask = URLSession.shared.webSocketTask(with: self.url)
-        didReceiveData = receiveData
-        didReceiveText = receiveText
-        didReceiveError = receiveError
         webSocketTask.resume()
         receiveMessage()
     }
@@ -70,9 +59,20 @@ public class WebSocket
     
     private(set) var isClosed = false
     
-    private let didReceiveData: (Data) -> Void
-    private let didReceiveText: (String) -> Void
-    private let didReceiveError: (WebSocket, Error) -> Void
+    public var didReceiveData: (Data) -> Void =
+    {
+        _ in log(warning: "Data handler not set")
+    }
+    
+    public var didReceiveText: (String) -> Void =
+    {
+        _ in log(warning: "Text handler not set")
+    }
+    
+    public var didReceiveError: (WebSocket, Error) -> Void =
+    {
+        _, _ in log(warning: "Error handler not set")
+    }
     
     // MARK: - Sending Messages
     
