@@ -1,4 +1,10 @@
 import Foundation
+import SwiftyToolz
+
+public extension JSONObject
+{
+    func nul(_ key: String) throws -> NSNull     { try (self[key] as? NSNull    ).unwrap() }
+}
 
 public let preferredLanguage =  Bundle.main.preferredLocalizations.first?.uppercased() ?? "EN"
 
