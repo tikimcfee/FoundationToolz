@@ -56,14 +56,4 @@ public extension Data
     {
         String(data: self, encoding: .utf8)
     }
-    
-    func jsonObject() throws -> JSONObject
-    {
-        try (JSONSerialization.jsonObject(with: self) as? JSONObject).unwrap()
-    }
-    
-    func jsonArray() throws -> JSONArray
-    {
-        try (JSONSerialization.jsonObject(with: self) as? JSONArray).unwrap()
-    }
 }
