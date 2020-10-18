@@ -135,7 +135,7 @@ public struct LSP
 
         public struct Request
         {
-            public init(id: ID, method: String, params: JSON?)
+            public init(id: ID = ID(), method: String, params: JSON?)
             {
                 self.id = id
                 self.method = method
@@ -172,6 +172,8 @@ public struct LSP
 
         public enum ID: CustomStringConvertible
         {
+            public init() { self = .string(UUID().uuidString) }
+            
             public var description: String
             {
                 switch self
