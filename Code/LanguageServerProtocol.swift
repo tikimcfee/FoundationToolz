@@ -5,16 +5,71 @@ public struct LSP
 {
     public enum Message
     {
+        // MARK: - Packet Conversion
+        
         public init(packet: Data) throws
         {
-            let data = try LSP.getMessageData(fromPacket: packet)
+            let data = try Message.getMessageData(fromPacket: packet)
             self = try Self(data)
         }
+        
+        public static func getMessageData(fromPacket packet: Data) throws -> Data
+        {
+            guard let contentIndex = indexOfContent(in: packet) else
+            {
+                throw "Invalid LSP Packet"
+            }
+            
+            return packet[contentIndex...]
+        }
+        
+        private static func indexOfContent(in packet: Data) -> Int?
+        {
+            let separatorLength = 4
+            
+            guard packet.count > separatorLength else { return nil }
+            
+            let lastIndex = packet.count - 1
+            let lastSearchIndex = lastIndex - separatorLength
+            
+            for index in 0 ... lastSearchIndex
+            {
+                if packet[index] == 13,
+                   packet[index + 1] == 10,
+                   packet[index + 2] == 13,
+                   packet[index + 3] == 10
+                {
+                    return index + separatorLength
+                }
+            }
+            
+            return nil
+        }
+        
+        public func packet() throws -> Data
+        {
+            try Message.makePacket(withMessageData: data())
+        }
+        
+        public static func makePacket(withMessageData message: Data) -> Data
+        {
+            let header = "Content-Length: \(message.count)\r\n\r\n".data!
+            return header + message
+        }
+        
+        // MARK: - Data Conversion
         
         public init(_ data: Data) throws
         {
             self = try Self(JSON(data))
         }
+        
+        public func data() throws -> Data
+        {
+            try json().data()
+        }
+        
+        // MARK: - JSON Conversion
         
         public init(_ json: JSON) throws
         {
@@ -59,16 +114,6 @@ public struct LSP
             }
         }
         
-        public func packet() throws -> Data
-        {
-            try LSP.makePacket(withMessageData: data())
-        }
-        
-        public func data() throws -> Data
-        {
-            try json().data()
-        }
-        
         public func json() -> JSON
         {
             var dictionary: [String : JSON] = ["jsonrpc": .string("2.0")]
@@ -95,6 +140,8 @@ public struct LSP
             
             return .dictionary(dictionary)
         }
+        
+        // MARK: - Cases
         
         case request(Request)
         case response(Response)
@@ -134,11 +181,11 @@ public struct LSP
                 
                 func json() -> JSON
                 {
-                    var dictionary: [String : JSON] =
-                        [
-                            "code": .int(code),
-                            "message": .string(message)
-                        ]
+                    var dictionary: [String: JSON] =
+                    [
+                        "code": .int(code),
+                        "message": .string(message)
+                    ]
                     
                     dictionary["data"] = data
                     
@@ -173,6 +220,8 @@ public struct LSP
             public let method: String
             public let params: JSON?
         }
+        
+        // MARK: - IDs
         
         public enum NullableID: CustomStringConvertible
         {
@@ -221,44 +270,5 @@ public struct LSP
             
             case string(String), int(Int)
         }
-    }
-    
-    public static func makePacket(withMessageData message: Data) -> Data
-    {
-        let header = "Content-Length: \(message.count)\r\n\r\n".data!
-        return header + message
-    }
-    
-    public static func getMessageData(fromPacket packet: Data) throws -> Data
-    {
-        guard let contentIndex = indexOfContent(in: packet) else
-        {
-            throw "Invalid LSP Packet"
-        }
-        
-        return packet[contentIndex...]
-    }
-    
-    private static func indexOfContent(in packet: Data) -> Int?
-    {
-        let separatorLength = 4
-        
-        guard packet.count > separatorLength else { return nil }
-        
-        let lastIndex = packet.count - 1
-        let lastSearchIndex = lastIndex - separatorLength
-        
-        for index in 0 ... lastSearchIndex
-        {
-            if packet[index] == 13,
-               packet[index + 1] == 10,
-               packet[index + 2] == 13,
-               packet[index + 3] == 10
-            {
-                return index + separatorLength
-            }
-        }
-        
-        return nil
     }
 }
