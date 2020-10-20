@@ -5,74 +5,95 @@ public struct LSP
 {
     public enum Message
     {
-        public init(_ json: JSONObject) throws
+        public init(packet: Data) throws
         {
-            if let nullableID = Message.getID(fromMessage: json) // request or response
+            let data = try LSP.getMessageData(fromPacket: packet)
+            self = try Self(data)
+        }
+        
+        public init(_ data: Data) throws
+        {
+            self = try Self(JSON(data))
+        }
+        
+        public init(_ json: JSON) throws
+        {
+            guard let nullableID = Message.getID(fromMessage: json) else
             {
-                if let result = try? json.any("result") // success response
-                {
-                    self = .response(.init(id: nullableID, result: .success(result)))
-                }
-                else if let errorJSON = try? json.obj("error") // error response
-                {
-                    let error = try Response.Error(errorJSON)
-                    self = .response(.init(id: nullableID, result: .failure(error)))
-                }
-                else // request
-                {
-                    guard case .value(let id) = nullableID else
-                    {
-                        throw "Invalid message JSON. Either it's a response with no error and no result, or it's a request/notification with a <null> id"
-                    }
-                    self = .request(.init(id: id,
-                                          method: try json.str("method"),
-                                          params: json["params"]))
-                }
+                self = try .notification(.init(method: json.string("method"),
+                                               params: json.params))
+                return
             }
-            else // notification
+            
+            if let result = json.result // success response
             {
-                self = .notification(.init(method: try json.str("method"),
-                                           params: json["params"]))
+                self = .response(.init(id: nullableID, result: .success(result)))
+            }
+            else if let error = json.error  // error response
+            {
+                self = .response(.init(id: nullableID,
+                                       result: .failure(try .init(error))))
+            }
+            else // request
+            {
+                guard case .value(let id) = nullableID else
+                {
+                    throw "Invalid message JSON: Either it's a response with no error and no result, or it's a request/notification with a <null> id"
+                }
+                
+                self = try .request(.init(id: id,
+                                          method: json.string("method"),
+                                          params: json.params))
             }
         }
         
-        private static func getID(fromMessage message: JSONObject) -> NullableID?
+        private static func getID(fromMessage message: JSON) -> NullableID?
         {
-            guard let anyID = message["id"] else { return nil }
+            guard let idJSON = message.id else { return nil }
             
-            switch anyID {
-            case let string as String: return .value(.string(string))
-            case let int as Int: return .value(.int(int))
-            case is NSNull: return .null
+            switch idJSON {
+            case .null: return .null
+            case .int(let int): return .value(.int(int))
+            case .string(let string): return .value(.string(string))
             default: return nil
             }
         }
         
-        public func jsonObject() -> JSONObject
+        public func packet() throws -> Data
         {
-            var json: JSONObject = ["jsonrpc": "2.0"]
+            try LSP.makePacket(withMessageData: data())
+        }
+        
+        public func data() throws -> Data
+        {
+            try json().data()
+        }
+        
+        public func json() -> JSON
+        {
+            var dictionary: [String : JSON] = ["jsonrpc": .string("2.0")]
             
             switch self
             {
             case .request(let request):
-                json["id"] = request.id.json
-                json["method"] = request.method
-                json["params"] = request.params
+                dictionary["id"] = request.id.json
+                dictionary["method"] = .string(request.method)
+                dictionary["params"] = request.params
             case .response(let response):
-                json["id"] = response.id.json
+                dictionary["id"] = response.id.json
                 switch response.result
                 {
                 case .success(let resultJSON):
-                    json["result"] = resultJSON
+                    dictionary["result"] = resultJSON
                 case .failure(let error):
-                    json["error"] = error.jsonObject()
+                    dictionary["error"] = error.json()
                 }
             case .notification(let notification):
-                json["method"] = notification.method
-                json["params"] = notification.params
+                dictionary["method"] = .string(notification.method)
+                dictionary["params"] = notification.params
             }
             
-            return json
+            return .dictionary(dictionary)
         }
         
         case request(Request)
@@ -90,7 +111,7 @@ public struct LSP
             public let method: String
             public let params: JSON?
         }
-
+        
         public struct Response
         {
             public init(id: NullableID, result: Result<JSON, Error>)
@@ -104,18 +125,24 @@ public struct LSP
             
             public struct Error: Swift.Error, CustomStringConvertible, ReadableErrorConvertible
             {
-                init(_ json: JSONObject) throws
+                init(_ error: JSON) throws
                 {
-                    code = try json.int("code")
-                    message = try json.str("message")
-                    data = json["data"]
+                    self.code = try error.int("code")
+                    self.message = try error.string("message")
+                    data = error["data"]
                 }
                 
-                func jsonObject() -> JSONObject
+                func json() -> JSON
                 {
-                    var object: JSONObject = ["code": code, "message": message]
-                    data.forSome { object["data"] = $0 }
-                    return object
+                    var dictionary: [String : JSON] =
+                        [
+                            "code": .int(code),
+                            "message": .string(message)
+                        ]
+                    
+                    dictionary["data"] = data
+                    
+                    return .dictionary(dictionary)
                 }
                 
                 public var readableMessage: String { description }
@@ -132,7 +159,7 @@ public struct LSP
                 public let data: JSON?
             }
         }
-
+        
         public struct Request
         {
             public init(id: ID = ID(), method: String, params: JSON?)
@@ -163,13 +190,13 @@ public struct LSP
                 switch self
                 {
                 case .value(let id): return id.json
-                case .null: return NSNull()
+                case .null: return .null
                 }
             }
             
             case value(ID), null
         }
-
+        
         public enum ID: CustomStringConvertible
         {
             public init() { self = .string(UUID().uuidString) }
@@ -187,8 +214,8 @@ public struct LSP
             {
                 switch self
                 {
-                case .string(let string): return string
-                case .int(let int): return int
+                case .string(let string): return .string(string)
+                case .int(let int): return .int(int)
                 }
             }
             
