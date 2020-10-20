@@ -196,37 +196,37 @@ public struct LSP
         }
     }
     
-    public static func makeFrame(withContent content: Data) -> Data
+    public static func makePacket(withMessageData message: Data) -> Data
     {
-        let header = "Content-Length: \(content.count)\r\n\r\n".data!
-        return header + content
+        let header = "Content-Length: \(message.count)\r\n\r\n".data!
+        return header + message
     }
     
-    public static func extractContent(fromFrame frame: Data) throws -> Data
+    public static func getMessageData(fromPacket packet: Data) throws -> Data
     {
-        guard let contentIndex = indexOfContent(in: frame) else
+        guard let contentIndex = indexOfContent(in: packet) else
         {
-            throw "Invalid LSP Frame"
+            throw "Invalid LSP Packet"
         }
         
-        return frame[contentIndex...]
+        return packet[contentIndex...]
     }
     
-    private static func indexOfContent(in frame: Data) -> Int?
+    private static func indexOfContent(in packet: Data) -> Int?
     {
         let separatorLength = 4
         
-        guard frame.count > separatorLength else { return nil }
+        guard packet.count > separatorLength else { return nil }
         
-        let lastIndex = frame.count - 1
+        let lastIndex = packet.count - 1
         let lastSearchIndex = lastIndex - separatorLength
         
         for index in 0 ... lastSearchIndex
         {
-            if frame[index] == 13,
-               frame[index + 1] == 10,
-               frame[index + 2] == 13,
-               frame[index + 3] == 10
+            if packet[index] == 13,
+               packet[index + 1] == 10,
+               packet[index + 2] == 13,
+               packet[index + 3] == 10
             {
                 return index + separatorLength
             }
