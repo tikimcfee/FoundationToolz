@@ -106,7 +106,8 @@ public struct LSP
         {
             guard let idJSON = message.id else { return nil }
             
-            switch idJSON {
+            switch idJSON
+            {
             case .null: return .null
             case .int(let int): return .value(.int(int))
             case .string(let string): return .value(.string(string))
