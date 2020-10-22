@@ -8,7 +8,7 @@ extension JSON: CustomStringConvertible, CustomDebugStringConvertible
     
     public var description: String
     {
-        (try? data())?.utf8String ?? "Error creating description for \(self)"
+        (try? data())?.utf8String ?? "\(jsonObject())"
     }
 }
 
@@ -22,8 +22,14 @@ extension JSON
     
     public func data() throws -> Data
     {
-        try JSONSerialization.data(withJSONObject: jsonObject(),
-                                   options: .prettyPrinted)
+        let topLevelJSONObject = jsonObject()
+        guard JSONSerialization.isValidJSONObject(topLevelJSONObject) else
+        {
+            throw "Invalid top-level JSON object: \(topLevelJSONObject)"
+        }
+        
+        return try JSONSerialization.data(withJSONObject: topLevelJSONObject,
+                                          options: .prettyPrinted)
     }
 }
 
