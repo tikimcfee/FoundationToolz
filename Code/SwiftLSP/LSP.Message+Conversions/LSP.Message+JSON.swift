@@ -2,20 +2,20 @@ import Foundation
 
 extension LSP.Message
 {
-    public init(_ message: JSON) throws
+    public init(_ json: JSON) throws
     {
-        guard let nullableID = Self.getID(fromMessage: message) else
+        guard let nullableID = Self.getID(fromMessage: json) else
         {
-            self = try .notification(.init(method: message.string("method"),
-                                           params: message.params))
+            self = try .notification(.init(method: json.string("method"),
+                                           params: json.params))
             return
         }
         
-        if let result = message.result // success response
+        if let result = json.result // success response
         {
             self = .response(.init(id: nullableID, result: .success(result)))
         }
-        else if let error = message.error  // error response
+        else if let error = json.error  // error response
         {
             self = .response(.init(id: nullableID,
                                    result: .failure(try .init(error))))
@@ -28,14 +28,14 @@ extension LSP.Message
             }
             
             self = try .request(.init(id: id,
-                                      method: message.string("method"),
-                                      params: message.params))
+                                      method: json.string("method"),
+                                      params: json.params))
         }
     }
     
-    private static func getID(fromMessage message: JSON) -> NullableID?
+    private static func getID(fromMessage json: JSON) -> NullableID?
     {
-        guard let idJSON = message.id else { return nil }
+        guard let idJSON = json.id else { return nil }
         
         switch idJSON
         {
@@ -76,11 +76,11 @@ extension LSP.Message
 
 extension LSP.Message.Response.Error
 {
-    init(_ error: JSON) throws
+    init(_ json: JSON) throws
     {
-        self.code = try error.int("code")
-        self.message = try error.string("message")
-        data = error.data
+        self.code = try json.int("code")
+        self.message = try json.string("message")
+        data = json.data
     }
     
     func json() -> JSON
