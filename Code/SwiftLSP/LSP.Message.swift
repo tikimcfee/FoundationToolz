@@ -4,21 +4,9 @@ extension LSP
 {
     public enum Message
     {
-        case notification(Notification)
         case response(Response)
         case request(Request)
-        
-        public struct Notification
-        {
-            public init(method: String, params: JSON?)
-            {
-                self.method = method
-                self.params = params
-            }
-            
-            public let method: String
-            public let params: JSON?
-        }
+        case notification(Notification)
         
         public struct Response
         {
@@ -39,6 +27,11 @@ extension LSP
             }
         }
         
+        public enum NullableID
+        {
+            case value(ID), null
+        }
+        
         public struct Request
         {
             public init(id: ID = ID(), method: String, params: JSON?)
@@ -53,16 +46,23 @@ extension LSP
             public let params: JSON?
         }
         
-        public enum NullableID
-        {
-            case value(ID), null
-        }
-        
         public enum ID
         {
             public init() { self = .string(UUID().uuidString) }
             
             case string(String), int(Int)
+        }
+        
+        public struct Notification
+        {
+            public init(method: String, params: JSON?)
+            {
+                self.method = method
+                self.params = params
+            }
+            
+            public let method: String
+            public let params: JSON?
         }
     }
 }

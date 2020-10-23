@@ -27,30 +27,26 @@ extension LSP
             }
         }
         
-        // MARK: - Process Response
+        // MARK: - Request and Response
+        
+        public func request(_ request: Message.Request,
+                            handleResult: @escaping ResultHandler) throws
+        {
+            save(handleResult, for: request.id)
+            try connection.send(.request(request))
+        }
         
         private func serverDidSend(_ response: Message.Response)
         {
             switch response.id
             {
             case .value(let id):
-                switch id
+                guard let handleResult = resultHandler(for: id) else
                 {
-                case .string(let idString):
-                    guard let handleResponse = handlersByRequestIDString[idString] else
-                    {
-                        log(error: "No response handler found")
-                        break
-                    }
-                    handleResponse(response.result)
-                case .int(let idInt):
-                    guard let handleResponse = handlersByRequestIDInt[idInt] else
-                    {
-                        log(error: "No response handler found")
-                        break
-                    }
-                    handleResponse(response.result)
+                    log(error: "No result handler found")
+                    break
                 }
+                handleResult(response.result)
             case .null:
                 switch response.result
                 {
@@ -62,27 +58,37 @@ extension LSP
             }
         }
         
-        public var serverDidSendNotification: (Message.Notification) -> Void = { _ in }
         public var serverDidSendError: (Message.Response.Error) -> Void = { _ in }
         
-        // MARK: - Request
+        // MARK: - Result Handlers
         
-        public func request(_ request: Message.Request,
-                            handleResponse: @escaping ResultHandler) throws
+        private func save(_ resultHandler: @escaping ResultHandler, for id: Message.ID)
         {
-            switch request.id
+            switch id
             {
             case .string(let idString):
-                handlersByRequestIDString[idString] = handleResponse
+                resultHandlersString[idString] = resultHandler
             case .int(let idInt):
-                handlersByRequestIDInt[idInt] = handleResponse
+                resultHandlersInt[idInt] = resultHandler
             }
-            
-            try connection.send(.request(request))
         }
         
-        private var handlersByRequestIDInt = [Int: ResultHandler]()
-        private var handlersByRequestIDString = [String: ResultHandler]()
+        private func resultHandler(for id: Message.ID) -> ResultHandler?
+        {
+            switch id
+            {
+            case .string(let idString):
+                return resultHandlersString[idString]
+            case .int(let idInt):
+                return resultHandlersInt[idInt]
+            }
+        }
+        
+        private var resultHandlersInt = [RequestIDInt: ResultHandler]()
+        private typealias RequestIDInt = Int
+        
+        private var resultHandlersString = [RequestIDString: ResultHandler]()
+        private typealias RequestIDString = String
         
         public typealias ResultHandler = (Result<JSON, Message.Response.Error>) -> Void
         
@@ -93,6 +99,7 @@ extension LSP
             try connection.send(.notification(notification))
         }
         
+        public var serverDidSendNotification: (Message.Notification) -> Void = { _ in }
         public var serverDidSendErrorOutput: (String) -> Void = { _ in }
         
         private let connection: SynchronousLSPServerConnection
