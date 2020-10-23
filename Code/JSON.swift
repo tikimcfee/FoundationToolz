@@ -8,7 +8,8 @@ extension JSON: CustomStringConvertible, CustomDebugStringConvertible
     
     public var description: String
     {
-        (try? data())?.utf8String ?? "\(jsonObject())"
+        let jo = jsonObject()
+        return (try? Data(jsonObject: jo))?.utf8String ?? "\(jo)"
     }
 }
 
@@ -20,16 +21,9 @@ extension JSON
         self = try Self(JSONSerialization.jsonObject(with: data))
     }
     
-    public func data() throws -> Data
+    public func encode() throws -> Data
     {
-        let topLevelJSONObject = jsonObject()
-        guard JSONSerialization.isValidJSONObject(topLevelJSONObject) else
-        {
-            throw "Invalid top-level JSON object: \(topLevelJSONObject)"
-        }
-        
-        return try JSONSerialization.data(withJSONObject: topLevelJSONObject,
-                                          options: .prettyPrinted)
+        try Data(jsonObject: jsonObject())
     }
 }
 
@@ -48,9 +42,9 @@ extension JSON
             self = .int(int)
         case let string as String:
             self = .string(string)
-        case let array as JSONObjectArray:
+        case let array as [JSONObject]:
             self = try .array(array.map(Self.init))
-        case let dictionary as JSONObjectDictionary:
+        case let dictionary as [String: JSONObject]:
             self = try .dictionary(dictionary.mapValues(Self.init))
         default:
             throw "Invalid JSON object: \(jsonObject)"
@@ -76,10 +70,6 @@ extension JSON
         }
     }
 }
-
-public typealias JSONObjectDictionary = [String: JSONObject]
-public typealias JSONObjectArray = [JSONObject]
-public typealias JSONObject = Any
 
 /// Case Access
 extension JSON

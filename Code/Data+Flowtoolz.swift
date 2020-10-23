@@ -3,6 +3,17 @@ import SwiftyToolz
 
 public extension Data
 {
+    init(jsonObject: JSONObject) throws
+    {
+        guard JSONSerialization.isValidJSONObject(jsonObject) else
+        {
+            throw "Invalid top-level JSON object: \(jsonObject)"
+        }
+        
+        self = try JSONSerialization.data(withJSONObject: jsonObject,
+                                          options: .prettyPrinted)
+    }
+    
     init?(fromFilePath filePath: String)
     {
         self.init(from: URL(fileURLWithPath: filePath))
@@ -57,3 +68,5 @@ public extension Data
         String(data: self, encoding: .utf8)
     }
 }
+
+public typealias JSONObject = Any

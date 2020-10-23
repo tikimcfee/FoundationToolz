@@ -1,4 +1,4 @@
-public protocol LSPServerConnection: class
+public protocol SynchronousLSPServerConnection: class
 {
     func send(_ message: LSP.Message) throws
     var serverDidSendResponse: (LSP.Message.Response) -> Void { get set }
