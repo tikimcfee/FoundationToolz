@@ -1,6 +1,38 @@
 import Foundation
 import SwiftyToolz
 
+extension LSP.ServerConnection
+{
+    // TODO: use PromiseKit to make these simple mappings easier
+    public func request<Value: Decodable>(_ req: LSP.Message.Request,
+                                          as type: Value.Type,
+                                          handleResult: @escaping (Result<Value, ResponseError>) -> Void) throws
+    {
+        try request(req)
+        {
+            result in
+            
+            switch result
+            {
+            case .success(let valueJSON):
+                do
+                {
+                    handleResult(.success(try valueJSON.decode()))
+                }
+                catch
+                {
+                    let errorMessage = "Failed to decode result as \(Value.self)"
+                    handleResult(.failure(.init(code: -32603,
+                                                message: errorMessage,
+                                                data: valueJSON)))
+                }
+            case .failure(let error):
+                handleResult(.failure(error))
+            }
+        }
+    }
+}
+
 extension LSP
 {
     public class ServerConnection
@@ -58,7 +90,7 @@ extension LSP
             }
         }
         
-        public var serverDidSendError: (Message.Response.Error) -> Void = { _ in }
+        public var serverDidSendError: (ResponseError) -> Void = { _ in }
         
         // MARK: - Result Handlers
         
@@ -90,7 +122,8 @@ extension LSP
         private var resultHandlersString = [RequestIDString: ResultHandler]()
         private typealias RequestIDString = String
         
-        public typealias ResultHandler = (Result<JSON, Message.Response.Error>) -> Void
+        public typealias ResultHandler = (Result<JSON, ResponseError>) -> Void
+        public typealias ResponseError = Message.Response.Error
         
         // MARK: - Forward to Connection
         

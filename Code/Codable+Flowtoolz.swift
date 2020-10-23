@@ -10,7 +10,7 @@ public extension Decodable
     
     init?(from file: URL?)
     {
-        if let decodedSelf = Self(fromJSON: Data(from: file))
+        if let decodedSelf = Self(Data(from: file))
         {
             self = decodedSelf
         }
@@ -20,19 +20,24 @@ public extension Decodable
         }
     }
     
-    init?(fromJSON jsonData: Data?)
+    init?(_ jsonData: Data?)
     {
         guard let jsonData = jsonData else { return nil }
         
         do
         {
-            self = try JSONDecoder().decode(Self.self, from: jsonData)
+            self = try Self(jsonData: jsonData)
         }
         catch
         {
-            log(error: error.localizedDescription)
+            log(error)
             return nil
         }
+    }
+    
+    init(jsonData: Data) throws
+    {
+        self = try JSONDecoder().decode(Self.self, from: jsonData)
     }
 }
 

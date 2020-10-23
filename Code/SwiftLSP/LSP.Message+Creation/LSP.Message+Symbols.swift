@@ -2,13 +2,13 @@ import Foundation
 
 public extension LSP.Message.Request
 {
-    static func workspaceSymbol(query: String = "") -> Self
+    static func workspaceSymbols(forQuery query: String = "") -> Self
     {
         .init(method: "workspace/symbol",
               params: .dictionary(["query": .string(query)]))
     }
     
-    static func docSymbol(file: URL) throws -> Self
+    static func docSymbols(inFile file: URL) throws -> Self
     {
         let params = JSON.dictionary(
         [
@@ -20,4 +20,11 @@ public extension LSP.Message.Request
         
         return .init(method: "textDocument/documentSymbol", params: params)
     }
+}
+
+public struct LSPDocumentSymbol: Codable
+{
+    public let name: String
+    public let kind: Int
+    public let children: [Self]
 }

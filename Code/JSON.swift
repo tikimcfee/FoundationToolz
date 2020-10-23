@@ -1,6 +1,15 @@
 import Foundation
 import SwiftyToolz
 
+/// Decoding Instances of Decodable Types
+extension JSON
+{
+    public func decode<Value: Decodable>(as type: Value.Type = Value.self) throws -> Value
+    {
+        try Value(jsonData: encode())
+    }
+}
+
 /// String Representation
 extension JSON: CustomStringConvertible, CustomDebugStringConvertible
 {

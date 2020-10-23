@@ -3,7 +3,7 @@ import SwiftyToolz
 
 public extension URL
 {
-    func get<Value: Decodable>(_ type: Value.Type,
+    func get<Value: Decodable>(_ type: Value.Type = Value.self,
                                handleResult: @escaping (Result<Value, RequestError>) -> Void)
     {
         URLSession.shared.dataTask(with: self)
@@ -30,7 +30,7 @@ public extension URL
                 return handleResult(.failure(.receivingDataFailed(httpResponse)))
             }
             
-            guard let value = Value(fromJSON: data) else
+            guard let value = Value(data) else
             {
                 return handleResult(.failure(.decodingDataFailed(httpResponse, data)))
             }
