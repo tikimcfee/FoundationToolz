@@ -4,11 +4,13 @@ public extension LSP.Message.Request
 {
     // capabilities LSP type: ClientCapabilities
     static func initialize(folder: URL,
+                           clientProcessID: Int,
                            capabilities: JSON = defaultClientCapabilities) -> Self
     {
         .init(method: "initialize",
-              params: .dictionary(["capabilities": capabilities,
-                                   "rootUri": .string(folder.absoluteString)]))
+              params: .dictionary(["rootUri": .string(folder.absoluteString),
+                                   "processId": .int(clientProcessID),
+                                   "capabilities": capabilities]))
     }
     
     static var defaultClientCapabilities: JSON
