@@ -41,11 +41,11 @@ public extension URL
     }
     
     func post<Value: Encodable>(_ value: Value,
-                                handleError: @escaping (RequestError?) -> Void)
+                                handleResult: @escaping (Result<Void, RequestError>) -> Void)
     {
         guard let valueData = value.encode() else
         {
-            return handleError(.encodingDataFailed)
+            return handleResult(.failure(.encodingDataFailed))
         }
         
         var request = URLRequest(url: self)
@@ -61,17 +61,19 @@ public extension URL
                 let nsError = error as NSError
                 let isURLError = nsError.domain == URLError.errorDomain
                 let urlErrorCode = isURLError ? URLError.Code(rawValue: nsError.code) : nil
-                return handleError(.receivingResponseFailed(nsError, urlErrorCode))
+                let error = RequestError.receivingResponseFailed(nsError, urlErrorCode)
+                return handleResult(.failure(error))
             }
             
             let httpResponse = response as! HTTPURLResponse
             
             guard (200...299).contains(httpResponse.statusCode) else
             {
-                return handleError(.validatingResponseStatusFailed(httpResponse, data))
+                let error = RequestError.validatingResponseStatusFailed(httpResponse, data)
+                return handleResult(.failure(error))
             }
             
-            handleError(nil)
+            handleResult(.success(()))
         }
         .resume()
     }
