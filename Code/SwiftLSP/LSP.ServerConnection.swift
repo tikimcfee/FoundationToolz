@@ -65,7 +65,16 @@ extension LSP
                             handleResult: @escaping ResultHandler) throws
         {
             save(handleResult, for: request.id)
-            try connection.send(.request(request))
+            
+            do
+            {
+                try connection.send(.request(request))
+            }
+            catch
+            {
+                removeResultHandler(for: request.id)
+                throw error
+            }
         }
         
         private func serverDidSend(_ response: Message.Response)
@@ -102,6 +111,17 @@ extension LSP
                 resultHandlersString[idString] = resultHandler
             case .int(let idInt):
                 resultHandlersInt[idInt] = resultHandler
+            }
+        }
+        
+        private func removeResultHandler(for id: Message.ID)
+        {
+            switch id
+            {
+            case .string(let idString):
+                resultHandlersString[idString] = nil
+            case .int(let idInt):
+                resultHandlersInt[idInt] = nil
             }
         }
         
