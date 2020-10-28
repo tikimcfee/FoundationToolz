@@ -84,4 +84,19 @@ public extension URL
     {
         url.appendingPathComponent(pathComponent)
     }
+    
+    @available(OSX 10.11, *)
+    var isDirectory: Bool
+    {
+        do
+        {
+            if let result = try resourceValues(forKeys: [.isDirectoryKey]).isDirectory
+            {
+                return result
+            }
+        }
+        catch { log(error) }
+        
+        return hasDirectoryPath
+    }
 }
