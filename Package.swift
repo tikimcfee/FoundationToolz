@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "FoundationToolz",
+    platforms: [.iOS(.v11), .tvOS(.v11), .macOS(.v10_12)],
     products: [
         .library(name: "FoundationToolz",
                  targets: ["FoundationToolz"]),

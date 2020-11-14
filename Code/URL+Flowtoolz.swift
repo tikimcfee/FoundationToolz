@@ -85,7 +85,6 @@ public extension URL
         url.appendingPathComponent(pathComponent)
     }
     
-    @available(OSX 10.11, *)
     var isDirectory: Bool
     {
         do
