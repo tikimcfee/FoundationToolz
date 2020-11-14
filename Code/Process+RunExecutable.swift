@@ -1,3 +1,5 @@
+#if os(macOS)
+
 import Foundation
 
 extension Process
@@ -27,3 +29,5 @@ extension Process
         return String(data: outputData, encoding: .utf8)!
     }
 }
+
+#endif
