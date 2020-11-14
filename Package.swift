@@ -11,7 +11,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/flowtoolz/SwiftyToolz.git",
-            .upToNextMajor(from: "1.5.5")
+            .upToNextMajor(from: "1.6.0")
         ),
         .package(
             url: "https://github.com/ashleymills/Reachability.swift.git",

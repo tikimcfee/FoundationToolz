@@ -2,7 +2,7 @@
     
     # meta infos
     s.name             = "FoundationToolz"
-    s.version          = "1.0.4"
+    s.version          = "1.1.0"
     s.summary          = "Reusable Foundation Tools"
     s.description      = "Some Reusable Tools Based on the Foundation Framework"
     s.homepage         = "http://flowtoolz.com"
@@ -25,7 +25,7 @@
 
     # dependencies
     s.dependency 'ReachabilitySwift', '~> 4.3.0'
-    s.dependency 'SwiftyToolz', '~> 1.5'
+    s.dependency 'SwiftyToolz', '~> 1.6'
     
     # sorces
     s.source_files = 'Code/**/*.swift'
