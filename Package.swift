@@ -6,13 +6,15 @@ let package = Package(
     name: "FoundationToolz",
     platforms: [.iOS(.v11), .tvOS(.v11), .macOS(.v10_12)],
     products: [
-        .library(name: "FoundationToolz",
-                 targets: ["FoundationToolz"]),
+        .library(
+            name: "FoundationToolz",
+            targets: ["FoundationToolz"]
+        ),
     ],
     dependencies: [
         .package(
             url: "https://github.com/flowtoolz/SwiftyToolz.git",
-            .upToNextMajor(from: "1.6.0")
+            .branch("master")
         ),
         .package(
             url: "https://github.com/ashleymills/Reachability.swift.git",
@@ -20,8 +22,10 @@ let package = Package(
         ),
     ],
     targets: [
-        .target(name: "FoundationToolz",
-                dependencies: ["SwiftyToolz", "Reachability"],
-                path: "Code"),
+        .target(
+            name: "FoundationToolz",
+            dependencies: ["SwiftyToolz", "Reachability"],
+            path: "Code"
+        ),
     ]
 )
