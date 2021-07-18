@@ -34,7 +34,7 @@ public extension Date
         return date
     }
     
-    func stringWithFormat(format: String) -> String
+    func string(withFormat format: String) -> String
     {
         let formatter = DateFormatter()
         
