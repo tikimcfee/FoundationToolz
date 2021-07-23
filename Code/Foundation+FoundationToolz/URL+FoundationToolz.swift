@@ -3,6 +3,7 @@ import SwiftyToolz
 
 public extension URL
 {
+    /// query parameters
     func parameters() -> [String : String]?
     {
         guard let query = self.query,

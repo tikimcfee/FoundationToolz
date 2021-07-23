@@ -3,7 +3,12 @@ import SwiftyToolz
 
 public extension String
 {
-    var data: Data? { data(using: .utf8) }
+    init(unicode: Int)
+    {
+        var unicodeCharacter = unichar(unicode)
+        
+        self = String(utf16CodeUnits: &unicodeCharacter, count: 1)
+    }
     
     init?(with filePath: String)
     {
@@ -17,6 +22,8 @@ public extension String
             return nil
         }
     }
+    
+    var data: Data? { data(using: .utf8) }
     
     var fileName: String
     {
@@ -42,12 +49,5 @@ public extension String
         let formatter = DateFormatter()
         formatter.dateFormat = toFormat
         return formatter.string(from: date)
-    }
-    
-    init(unicode: Int)
-    {
-        var unicodeCharacter = unichar(unicode)
-        
-        self = String(utf16CodeUnits: &unicodeCharacter, count: 1)
     }
 }
