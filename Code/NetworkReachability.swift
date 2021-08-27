@@ -1,5 +1,4 @@
 import Foundation
-import Reachability
 import Network
 import SwiftyToolz
 
@@ -11,21 +10,11 @@ public class NetworkReachability
     
     private init()
     {
-        if #available(OSX 10.14, iOS 12.0, tvOS 12.0, *)
-        {
-            pathMonitor.pathUpdateHandler = notifyObserversWithNetworkPath
-            pathMonitor.start(queue: DispatchQueue(label: "Network Reachability Monitor",
-                                                   qos: .default))
-        }
-        else
-        {
-            initialzeWithReachabilityCocoaod()
-        }
+        pathMonitor.pathUpdateHandler = notifyObserversWithNetworkPath
+        pathMonitor.start(queue: DispatchQueue(label: "Network Reachability Monitor",
+                                               qos: .default))
     }
     
-    // MARK: - Based on Network Framework (Mojave+)
-    
-    @available(OSX 10.14, iOS 12.0, tvOS 12.0, *)
     private func notifyObserversWithNetworkPath(_ networkPath: NWPath)
     {
         let update: Update =
@@ -36,51 +25,6 @@ public class NetworkReachability
         
         sendToObservers(update)
     }
-    
-    // MARK: - Based On Reachability Cocoapod
-    
-    private func initialzeWithReachabilityCocoaod()
-    {
-        guard let reachability = reachability else
-        {
-            log(error: "Reachability object couldn't be created.")
-            return
-        }
-        
-        reachability.whenReachable = sendToObservers
-        reachability.whenUnreachable = sendToObservers
-        
-        do
-        {
-            try reachability.startNotifier()
-        }
-        catch
-        {
-            log(error: error.localizedDescription)
-        }
-    }
-    
-    private func sendToObservers(_ reachability: Reachability)
-    {
-        let update: Update =
-        {
-            switch reachability.connection
-            {
-            case .none: return .noInternet
-            case .wifi: return .fullInternet
-            case .cellular: return .expensiveInternet
-            }
-        }()
-        
-        sendToObservers(update)
-    }
-    
-    public var connection: Reachability.Connection?
-    {
-        reachability?.connection
-    }
-    
-    private let reachability = Reachability()
     
     // MARK: - Primitive Observability
     
@@ -110,7 +54,6 @@ public class NetworkReachability
     }
     
     public enum Update { case noInternet, expensiveInternet, fullInternet }
+    
+    private let pathMonitor = NWPathMonitor()
 }
-
-@available(OSX 10.14, iOS 12.0, tvOS 12.0, *)
-private let pathMonitor = NWPathMonitor()
