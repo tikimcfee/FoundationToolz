@@ -2,7 +2,8 @@ import Foundation
 
 /// Arbitrary Helpers that should probably be simplified/integrated/removed ... accumulated from different projects but not systematic ...
 
-extension Int {
+public extension Int
+{
     // MARK: - Get month name from month number
     
     var monthString: String
@@ -33,7 +34,7 @@ extension Int {
     }
 }
 
-extension Date
+public extension Date
 {
     static func dayFromJSONDateString(_ json: String) -> Date?
     {
