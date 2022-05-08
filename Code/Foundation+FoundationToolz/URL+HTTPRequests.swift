@@ -4,7 +4,7 @@ import SwiftyToolz
 @available(macOS 12.0, *)
 public extension URL
 {
-    func get<Value: Decodable>(_ type: Value.Type = Value.self) async -> Result<Value, RequestError>
+    func get<Value: Decodable>(_ type: Value.Type = Value.self) async throws -> Value
     {
         do
         {
@@ -14,30 +14,38 @@ public extension URL
             
             guard (200 ... 299).contains(httpResponse.statusCode) else
             {
-                return .failure(.validatingResponseStatusFailed(httpResponse, data))
+                throw RequestError.validatingResponseStatusFailed(httpResponse, data)
             }
             
             guard let value = Value(data) else
             {
-                return .failure(.decodingDataFailed(httpResponse, data))
+                throw RequestError.decodingDataFailed(httpResponse, data)
             }
             
-            return .success(value)
+            return value
         }
-        catch
+        catch let nsError as NSError
         {
-            let nsError = error as NSError
             let isURLError = nsError.domain == URLError.errorDomain
             let urlErrorCode = isURLError ? URLError.Code(rawValue: nsError.code) : nil
-            return .failure(.requestFailed(nsError, urlErrorCode))
+            let requestError = RequestError.requestFailed(nsError, urlErrorCode)
+            log(error: requestError.description)
+            throw requestError
+        }
+        catch let requestError as RequestError
+        {
+            log(error: requestError.description)
+            throw requestError
         }
     }
     
-    func post<Value: Encodable>(_ value: Value) async -> RequestError?
+    func post<Value: Encodable>(_ value: Value) async throws
     {
         guard let valueData = value.encode() else
         {
-            return .encodingDataFailed
+            let requestError = RequestError.encodingDataFailed
+            log(error: requestError.description)
+            throw requestError
         }
         
         var request = URLRequest(url: self)
@@ -52,17 +60,21 @@ public extension URL
             
             guard (200...299).contains(httpResponse.statusCode) else
             {
-                return .validatingResponseStatusFailed(httpResponse, data)
+                throw RequestError.validatingResponseStatusFailed(httpResponse, data)
             }
-            
-            return nil
         }
-        catch
+        catch let nsError as NSError
         {
-            let nsError = error as NSError
             let isURLError = nsError.domain == URLError.errorDomain
             let urlErrorCode = isURLError ? URLError.Code(rawValue: nsError.code) : nil
-            return .requestFailed(nsError, urlErrorCode)
+            let requestError = RequestError.requestFailed(nsError, urlErrorCode)
+            log(error: requestError.description)
+            throw requestError
+        }
+        catch let requestError as RequestError
+        {
+            log(error: requestError.description)
+            throw requestError
         }
     }
     
