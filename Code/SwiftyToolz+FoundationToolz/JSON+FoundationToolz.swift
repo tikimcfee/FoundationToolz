@@ -45,10 +45,9 @@ public extension JSON
         {
         case is NSNull:
             self = .null
-        case let bool as Bool:
-            self = .bool(bool)
-        case let int as Int:
-            self = .int(int)
+        case let nsNumber as NSNumber:
+            if nsNumber.isBool { self = .bool(nsNumber.boolValue) }
+            else { self = .int(nsNumber.intValue) }
         case let string as String:
             self = .string(string)
         case let array as [JSONObject]:
@@ -78,4 +77,9 @@ public extension JSON
             return dictionary.mapValues { $0.jsonObject() }
         }
     }
+}
+
+extension NSNumber
+{
+    var isBool: Bool { type(of: self) == type(of: NSNumber(true)) }
 }
