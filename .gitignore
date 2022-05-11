@@ -3,14 +3,8 @@ build/
 DerivedData/
 .build
 .DS_Store
+Package.resolved
 
 ### settings
 *.pbxuser
 xcuserdata/
-
-### carthage
-Checkouts/
-Build/
-
-### cocoapods
-Pods/
