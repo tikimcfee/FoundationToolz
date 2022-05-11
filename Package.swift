@@ -23,5 +23,10 @@ let package = Package(
             dependencies: ["SwiftyToolz"],
             path: "Code"
         ),
+        .testTarget(
+            name: "FoundationToolzTests",
+            dependencies: ["FoundationToolz", "SwiftyToolz"],
+            path: "Tests"
+        ),
     ]
 )
