@@ -3,6 +3,20 @@ import SwiftyToolz
 
 public extension URL
 {
+    func mapSecurityScoped<Mapped>(_ map: (URL) throws -> Mapped) throws -> Mapped
+    {
+        guard startAccessingSecurityScopedResource() else
+        {
+            throw "Couldn't access security scoped URL"
+        }
+        
+        let mapped = try map(self)
+        
+        stopAccessingSecurityScopedResource()
+        
+        return mapped
+    }
+    
     /// query parameters
     func parameters() -> [String : String]?
     {
