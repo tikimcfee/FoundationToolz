@@ -63,12 +63,19 @@ public extension Encodable
         
         do
         {
-            return try jsonEncoder.encode(self)
+            return try encode() as Data
         }
         catch
         {
             log(error: error.localizedDescription)
             return nil
         }
+    }
+    
+    func encode() throws -> Data
+    {
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+        return try jsonEncoder.encode(self)
     }
 }
