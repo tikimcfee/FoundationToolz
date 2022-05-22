@@ -1,5 +1,5 @@
 import Foundation
-import Network
+//import Network
 import SwiftyToolz
 
 public class NetworkReachability
@@ -10,21 +10,21 @@ public class NetworkReachability
     
     private init()
     {
-        pathMonitor.pathUpdateHandler = notifyObserversWithNetworkPath
-        pathMonitor.start(queue: DispatchQueue(label: "Network Reachability Monitor",
-                                               qos: .default))
+//        pathMonitor.pathUpdateHandler = notifyObserversWithNetworkPath
+//        pathMonitor.start(queue: DispatchQueue(label: "Network Reachability Monitor",
+//                                               qos: .default))
     }
     
-    private func notifyObserversWithNetworkPath(_ networkPath: NWPath)
-    {
-        let update: Update =
-        {
-            guard networkPath.status == .satisfied else { return .noInternet }
-            return networkPath.isExpensive ? .expensiveInternet : .fullInternet
-        }()
-        
-        sendToObservers(update)
-    }
+//    private func notifyObserversWithNetworkPath(_ networkPath: NWPath)
+//    {
+//        let update: Update =
+//        {
+//            guard networkPath.status == .satisfied else { return .noInternet }
+//            return networkPath.isExpensive ? .expensiveInternet : .fullInternet
+//        }()
+//        
+//        sendToObservers(update)
+//    }
     
     // MARK: - Primitive Observability
     
@@ -55,5 +55,5 @@ public class NetworkReachability
     
     public enum Update { case noInternet, expensiveInternet, fullInternet }
     
-    private let pathMonitor = NWPathMonitor()
+//    private let pathMonitor = NWPathMonitor()
 }
